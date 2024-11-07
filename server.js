@@ -45,7 +45,6 @@ app.get(API_POSTS, (req, res) => {
 app.get(API_POST_WITH_ID, (req, res) => {
   const {id} = req.params;
   const foundPost = posts.find(post => post.id === Number(id));
-    console.log(foundPost)
 
   if (foundPost) {
         res.json(foundPost); // Return the found post
@@ -72,8 +71,6 @@ const upload = multer({storage: storage})
 
 // Add a new blog
 app.post(API_POSTS,upload.single('thumbnail') , (req, res) => {
-      console.log(req.body); // Log the body
-    console.log(req.file); 
   const newPost = { 
     id: uuidv4(), 
     title:req.body.title, 
