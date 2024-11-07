@@ -33,9 +33,9 @@ export default function BlogCard({ id, title, content, thumbnail, deletePost }) 
     }
 
     return (
-        <div className="flex flex-col w-full h-64 bg-gray-700 overflow-hidden rounded-lg lg:flex-row lg:items-start">
+        <div className="flex flex-col w-full lg:h-64 bg-gray-700 overflow-hidden rounded-lg lg:flex-row lg:items-start">
             <div className="w-full lg:w-2/6">
-                <img className="object-cover h-64 w-full overflow-hidden" src={thumbnail ? thumbnail : "/images/sample.png"} alt="Thumbnail photo" />
+                <img className="object-cover lg:h-64  w-full overflow-hidden" src={thumbnail ? thumbnail : "/images/sample.png"} alt="Thumbnail photo" />
             </div>
             <div className="w-full lg:w-4/6 p-5 flex flex-col">
                 <div className="relative">

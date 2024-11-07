@@ -1,13 +1,18 @@
+require('dotenv').config(); 
+
 const { v4: uuidv4 } = require('uuid'); 
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
 const app = express();
-const port = 5001;
+const port = process.env.PORT || 5000;
+const API_POSTS = "/api/posts";
+const API_POST_WITH_ID = API_POSTS + "/:id"
+
 
 const corsOptions = {
-    origin: 'http://localhost:3000', //frontend URL
+    origin: process.env.CORS_ORIGIN, //frontend URL
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
 };
 
@@ -31,14 +36,17 @@ let posts = [
 ];
 
 // Get the list of blogs
-app.get("/api/posts", (req, res) => {
+app.get(API_POSTS, (req, res) => {
+  console.log(posts)
   res.json(posts);
 });
 
 //Get 1 post
-app.get("/api/posts/:id", (req, res) => {
+app.get(API_POST_WITH_ID, (req, res) => {
   const {id} = req.params;
   const foundPost = posts.find(post => post.id === Number(id));
+    console.log(foundPost)
+
   if (foundPost) {
         res.json(foundPost); // Return the found post
   } else {
@@ -56,14 +64,14 @@ const storage = multer.diskStorage({
     cb(null, uploadPath);
   },
    filename: (req,file, cb) => {
-    const uniqueName= `${Date.now()}-${file.originalname}`;
+    const uniqueName= `ThumbnailPhoto-${uuidv4()}.${file.mimetype.split('/')[1]}`;
     cb(null, uniqueName);
    }
 })
 const upload = multer({storage: storage})
 
 // Add a new blog
-app.post("/api/posts",upload.single('thumbnail') , (req, res) => {
+app.post(API_POSTS,upload.single('thumbnail') , (req, res) => {
       console.log(req.body); // Log the body
     console.log(req.file); 
   const newPost = { 
@@ -77,7 +85,7 @@ app.post("/api/posts",upload.single('thumbnail') , (req, res) => {
 });
 
 // Edit a blog
-app.put("/api/posts/:id", upload.single('thumbnail'), (req, res) => {
+app.put(API_POST_WITH_ID, upload.single('thumbnail'), (req, res) => {
   const { id } = req.params;
   const updatedPost = {
         id: Number(id),
@@ -90,7 +98,7 @@ app.put("/api/posts/:id", upload.single('thumbnail'), (req, res) => {
 });
 
 // Delete a blog
-app.delete("/api/posts/:id", (req, res) => {
+app.delete(API_POST_WITH_ID, (req, res) => {
   const { id } = req.params;
   posts = posts.filter((post) => post.id !== Number(id));
   res.json({ message: "Post deleted" });
