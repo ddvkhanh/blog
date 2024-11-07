@@ -4,6 +4,7 @@ const { v4: uuidv4 } = require('uuid');
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const mongoose = require('mongoose');
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -35,72 +36,128 @@ let posts = [
   },
 ];
 
-// Get the list of blogs
-app.get(API_POSTS, (req, res) => {
-  console.log(posts)
-  res.json(posts);
-});
+//Connect MongoDB
+console.log('Connecting to MongoDB with the following URI:', process.env.DB_CONNECTION_STRING);
 
-//Get 1 post
-app.get(API_POST_WITH_ID, (req, res) => {
-  const {id} = req.params;
-  const foundPost = posts.find(post => post.id === Number(id));
+mongoose.set("strictQuery", false);
 
-  if (foundPost) {
-        res.json(foundPost); // Return the found post
-  } else {
-        res.status(404).json({ message: "Post not found" }); // Return a 404 if not found
+mongoose.connect(process.env.DB_CONNECTION_STRING, { serverSelectionTimeoutMS: 5000 })
+  .then(() => console.log('MongoDB connected...'))
+  .catch(error => console.error(error));
+
+//Define schema
+const postSchema = new mongoose.Schema({
+  title: String,
+  content: String,
+  thumbnail: {
+    data: Buffer,
+    contentType: String,
   }
-});
+})
+
+const Post = mongoose.model("Post", postSchema);
 
 //set up multer middleware for img upload
 const path = require('path'); 
 const multer =require('multer');
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadPath = path.join(__dirname, 'client/public/images/blogs');
+const storage = multer.memoryStorage();
 
-    cb(null, uploadPath);
-  },
-   filename: (req,file, cb) => {
-    const uniqueName= `ThumbnailPhoto-${uuidv4()}.${file.mimetype.split('/')[1]}`;
-    cb(null, uniqueName);
-   }
-})
-const upload = multer({storage: storage})
+const upload = multer({
+  storage: storage,
+  limits: {fileSize: 10*1024*1024}
+  })
+
+// Get the list of blogs
+app.get(API_POSTS, async(req, res) => {
+  try {
+    const posts = await Post.find();
+      res.json(posts);
+  } catch(error) {
+      console.error("Error updating posts:", error);
+      res.status(500).json({error: "Failed to fetch posts"});
+  }
+});
+
+//Get 1 post
+app.get(API_POST_WITH_ID, async (req, res) => {
+  try {
+    const {id} = req.params;
+    const foundPost = await Post.findById(id);
+    if (foundPost) {
+      res.json(foundPost); // Return the found post
+    } else {
+      res.status(404).json({ message: "Post not found" }); // Return a 404 if not found
+    }
+  } catch (error) {
+      console.error("Error fetching post:", error);
+      res.status(500).json({error: "Failed to fetch post"});
+  }
+});
 
 // Add a new blog
-app.post(API_POSTS,upload.single('thumbnail') , (req, res) => {
-  const newPost = { 
-    id: uuidv4(), 
+app.post(API_POSTS,upload.single('thumbnail') , async (req, res) => {
+  try {
+    const newPost = new Post({
     title:req.body.title, 
     content: req.body.content,
-    thumbnail: req.file ? `/images/blogs/${req.file.filename}` : null 
-   };
-  posts.push(newPost);
-  res.json(newPost);
+    thumbnail: req.file ? {
+      data: req.file.buffer,
+      contentType: req.file.mimetype,
+      fileName: `Thumbnail-photo-${uuidv4()}`
+    }
+    : {
+      data:null,
+      contentType:'image/png',
+      defaultImagePath:'/images/sample.png'
+    }
+  })
+    await newPost.save();
+    res.status(201).json(newPost);
+  } catch (error) {
+    console.error("Error saving post:", error);
+    res.status(500).json({ error: "Failed to save post" });
+  }
 });
 
 // Edit a blog
-app.put(API_POST_WITH_ID, upload.single('thumbnail'), (req, res) => {
-  const { id } = req.params;
-  const updatedPost = {
-        id: Number(id),
+app.put(API_POST_WITH_ID, upload.single('thumbnail'), async(req, res) => {
+  try {
+    const { id } = req.params;
+    const updatedPostData = {
         title: req.body.title,
         content: req.body.content,
-        thumbnail: req.file ? `/images/blogs/${req.file.filename}` : null
     };
-  posts = posts.map((post) => (post.id === Number(id) ? updatedPost : post));
-  res.json(updatedPost);
+    if (req.file) {
+      updatedPost.thumbnail = {
+        data: req.file.buffer,
+        contentType: req.file.mimetype,
+        fileName: `Thumbnail-photo-${uuidv4()}`
+      }
+    }
+    const updatedPost = await Post.findByIdAndUpdate(id, updatedPostData, {new: true});
+    res.status(201).json(updatedPost);
+
+  } catch(error) {
+    console.error("Error updating post:", error);
+    res.status(500).json({ error: "Failed to update post" });
+  }
+
 });
 
 // Delete a blog
-app.delete(API_POST_WITH_ID, (req, res) => {
-  const { id } = req.params;
-  posts = posts.filter((post) => post.id !== Number(id));
-  res.json({ message: "Post deleted" });
+app.delete(API_POST_WITH_ID, async (req, res) => {
+  try {
+    const { id } = req.params;
+    await Post.findByIdAndDelete(id);
+    res.json({ message: "Post deleted" });
+  } catch (error) {
+    console.error("Error deleting post:", error);
+    res.status(500).json({ error: "Failed to delete post" });
+  }
 });
 
+
+//PORT
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
