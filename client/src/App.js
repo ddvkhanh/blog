@@ -11,7 +11,7 @@ import BlogForm from "./components/Form/BlogForm";
 
 function App() {
   return (
-    <div className="bg-black mx-auto text-white">
+    <div className="bg-black mx-auto text-white min-h-lvh">
         <NavBar />
         <Routes>
             <Route path="/" element={<PostList />} />
