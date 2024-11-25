@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import PostCard from "./PostCard"
-import { useNavigate, Outlet } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { API_POSTS } from "../../constants/data";
 
@@ -14,11 +14,17 @@ export default function PostList() {
 
     const [posts, setPosts] = useState([]);
 
+
     useEffect(() => {
         const fetchBlogs = async () => {
-            const response = await axios.get(API_POSTS);
-            setPosts(response.data);
+            try {
+                const response = await axios.get(API_POSTS);
+                setPosts(response.data);
+            } catch (error) {
+                console.error("Error fetching posts:", error);
+            }
         };
+
         fetchBlogs();
     }, []);
 
@@ -32,7 +38,7 @@ export default function PostList() {
             <div className="gap-10 pb-10 flex flex-col md:flex-row items-center justify-center">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-10 text-pretty text-base font-medium">
                     {posts.map((post) => (
-                        <PostCard key={post.id} {...post} deletePost={deletePost} />
+                        <PostCard key={post._id || post.title} post={post} deletePost={deletePost} />
                     ))}
                 </div>
             </div>

@@ -11,6 +11,8 @@ export default function BlogForm() {
 
     const navigate = useNavigate();
     const { id } = useParams();
+    const FILE_SIZE_LIMIT = 10 * 1024 * 1024; // 10MB
+
 
     useEffect(() => {
         if (id) {
@@ -32,8 +34,15 @@ export default function BlogForm() {
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            setThumbnail(file);
-            setThumbnailName(file.name);
+            if (file.size > FILE_SIZE_LIMIT) {
+                alert("File size exceeds 10MB limit. Please choose a smaller file.");
+                e.target.value = "";
+                setThumbnail(null);
+                setThumbnailName(null);
+            } else {
+                setThumbnail(file);
+                setThumbnailName(file.name);
+            }
         }
     }
 
