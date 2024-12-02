@@ -44,8 +44,10 @@ export default function RichTextEditor({ content, setContent }) {
     const [url, setUrl] = useState("");
 
     useEffect(() => {
-        if (editor && content) {
-            editor.commands.setContent(content);  // Explicitly set the content after it's loaded
+        if (!editor || !content) return;
+
+        if (editor.getHTML() !== content) {
+            editor.commands.setContent(content);
         }
     }, [editor, content]);
 
@@ -206,7 +208,7 @@ export default function RichTextEditor({ content, setContent }) {
                 onRemoveLink={removeLink}
             />
 
-            <EditorContent editor={editor} setContent={content} className={styles.ProseMirror} />
+            <EditorContent editor={editor} className={styles.ProseMirror} />
 
         </div>
     );

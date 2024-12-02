@@ -59,9 +59,8 @@ export default function PostCard({ post, deletePost }) {
                         </button>
                     </div>
                 </div>
-
                 <h2 className="text-white leading-normal text-lg">{title}</h2>
-                <p className="text-gray-300 mt-2 line-clamp-3 h-30">{content}</p>
+                <p className="text-gray-300 mt-2 line-clamp-3 h-30" dangerouslySetInnerHTML={{ __html: content }}></p>
                 {/* <div  className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
                             <img src="https://randomuser.me/api/portraits/men/11.jpg" />
                         </div> */}
