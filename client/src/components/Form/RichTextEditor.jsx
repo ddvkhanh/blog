@@ -2,7 +2,7 @@ import styles from './form.module.css';
 import React, { useCallback, useState, useEffect } from "react";
 import classNames from "classnames";
 // => Tiptap packages
-import { useEditor, EditorContent, Editor, BubbleMenu } from "@tiptap/react";
+import { useEditor, EditorContent, BubbleMenu } from "@tiptap/react";
 import Document from "@tiptap/extension-document";
 import Paragraph from "@tiptap/extension-paragraph";
 import Text from "@tiptap/extension-text";
@@ -13,6 +13,13 @@ import Italic from "@tiptap/extension-italic";
 import Strike from "@tiptap/extension-strike";
 import Code from "@tiptap/extension-code";
 import History from "@tiptap/extension-history";
+import ListItem from "@tiptap/extension-list-item";
+import BulletList from "@tiptap/extension-bullet-list";
+import OrderedList from "@tiptap/extension-ordered-list";
+
+
+
+
 import { Placeholder } from '@tiptap/extension-placeholder';
 
 import * as Icons from "./Icons";
@@ -33,6 +40,9 @@ export default function RichTextEditor({ content, setContent }) {
             Italic,
             Strike,
             Code,
+            ListItem,
+            BulletList,
+            OrderedList,
             Placeholder.configure({
                 placeholder: 'Start typing...',
             }),
@@ -43,13 +53,30 @@ export default function RichTextEditor({ content, setContent }) {
     const [modalIsOpen, setIsOpen] = useState(false);
     const [url, setUrl] = useState("");
 
-    useEffect(() => {
-        if (!editor || !content) return;
+    // useEffect(() => {
+    //     if (!editor || !content) return;
 
-        if (editor.getHTML() !== content) {
+    //     if (editor.getHTML() !== content) {
+    //         console.log(editor.getHTML());
+    //         console.log(content);
+
+    //         editor.commands.setContent(content);
+    //     }
+    // }, [editor, content]);
+
+    useEffect(() => {
+        if (editor && content) {
+            // Set content on first mount or when content prop changes
             editor.commands.setContent(content);
         }
-    }, [editor, content]);
+
+        if (editor) {
+            // Update content in real-time based on editor changes
+            editor.on('update', () => {
+                setContent(editor.getHTML());  // Update the content state whenever editor updates
+            });
+        }
+    }, [editor, content, setContent]);
 
     const openModal = useCallback(() => {
         console.log(editor.chain().focus());
@@ -101,6 +128,14 @@ export default function RichTextEditor({ content, setContent }) {
         editor.chain().focus().toggleCode().run();
     }, [editor]);
 
+    const toggleBulletList = useCallback(() => {
+        editor.chain().focus().toggleList('bulletList', 'listItem').run();
+    }, [editor]);
+
+    const toggleOrderedList = useCallback(() => {
+        editor.chain().focus().toggleList('orderedList', 'listItem').run();
+    }, [editor]);
+
     if (!editor) {
         return null;
     }
@@ -127,7 +162,7 @@ export default function RichTextEditor({ content, setContent }) {
                 <button
                     type="button"
                     className={classNames(styles.menuButton, {
-                        "is-active": editor.isActive("link")
+                        [styles.isActive]: editor.isActive("link")
                     })}
                     onClick={openModal}
                 >
@@ -136,7 +171,7 @@ export default function RichTextEditor({ content, setContent }) {
                 <button
                     type="button"
                     className={classNames(styles.menuButton, {
-                        "is-active": editor.isActive("bold")
+                        [styles.isActive]: editor.isActive("bold")
                     })}
                     onClick={toggleBold}
                 >
@@ -145,7 +180,7 @@ export default function RichTextEditor({ content, setContent }) {
                 <button
                     type="button"
                     className={classNames(styles.menuButton, {
-                        "is-active": editor.isActive("underline")
+                        [styles.isActive]: editor.isActive("underline")
                     })}
                     onClick={toggleUnderline}
                 >
@@ -154,7 +189,7 @@ export default function RichTextEditor({ content, setContent }) {
                 <button
                     type="button"
                     className={classNames(styles.menuButton, {
-                        "is-active": editor.isActive("italic")
+                        [styles.isActive]: editor.isActive("italic")
                     })}
                     onClick={toggleItalic}
                 >
@@ -163,7 +198,7 @@ export default function RichTextEditor({ content, setContent }) {
                 <button
                     type="button"
                     className={classNames(styles.menuButton, {
-                        "is-active": editor.isActive("strike")
+                        [styles.isActive]: editor.isActive("strike")
                     })}
                     onClick={toggleStrike}
                 >
@@ -172,11 +207,29 @@ export default function RichTextEditor({ content, setContent }) {
                 <button
                     type="button"
                     className={classNames(styles.menuButton, {
-                        "is-active": editor.isActive("code")
+                        [styles.isActive]: editor.isActive("code")
                     })}
                     onClick={toggleCode}
                 >
                     <Icons.Code />
+                </button>
+                <button
+                    type="button"
+                    className={classNames(styles.menuButton, {
+                        [styles.isActive]: editor.isActive("bulletList")
+                    })}
+                    onClick={toggleBulletList}
+                >
+                    <Icons.BulletList />
+                </button>
+                <button
+                    type="button"
+                    className={classNames(styles.menuButton, {
+                        [styles.isActive]: editor.isActive("orderedList")
+                    })}
+                    onClick={toggleOrderedList}
+                >
+                    <Icons.OrderedList />
                 </button>
             </div>
 

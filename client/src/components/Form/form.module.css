@@ -24,6 +24,17 @@ html {
   box-sizing: border-box;
 }
 
+ul {
+    list-style: disc;
+    margin-left: 20px; 
+}
+
+ol {
+    list-style: decimal;
+    margin-left: 20px;
+}
+
+
 *,
 *:before,
 *:after {
@@ -173,6 +184,11 @@ code {
 .menuButton.is-active {
   background-color: var(--color-gray-5);
   color: var(--color-black);
+}
+
+.isActive {
+    background-color: var(--color-gray-5);
+    color: var(--color-black);
 }
 
 .button:disabled,

@@ -148,3 +148,37 @@ export const X = ({ size = 16, color = "currentColor" }) => (
         <line x1="6" y1="6" x2="18" y2="18"></line>
     </svg>
 );
+
+export const BulletList = ({ size = 16, color = "currentColor" }) => (
+    <svg xmlns="http://www.w3.org/2000/svg"
+        width={size}
+        height={size}
+        fill="none" viewBox="0 0 24 24"
+        strokeWidth="1.5"
+        stroke="currentColor"
+    >
+        <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+    </svg>
+);
+
+export const OrderedList = ({ size = 16, color = "currentColor" }) => (
+    <svg xmlns="http://www.w3.org/2000/svg"
+        fill="none" viewBox="0 0 24 24"
+        width={size}
+        height={size}
+        strokeWidth="1.5"
+        stroke="currentColor"
+    >
+        <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M8.242 5.992h12m-12 6.003H20.24m-12 5.999h12M4.117 7.495v-3.75H2.99m1.125 3.75H2.99m1.125 0H5.24m-1.92 2.577a1.125 1.125 0 1 1 1.591 1.59l-1.83 1.83h2.16M2.99 15.745h1.125a1.125 1.125 0 0 1 0 2.25H3.74m0-.002h.375a1.125 1.125 0 0 1 0 2.25H2.99" />
+    </svg >
+);
+
+
+
+
