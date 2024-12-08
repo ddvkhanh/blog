@@ -35,7 +35,7 @@ The server will run at `http://localhost:3001`.
 ## Project Structure
 
 - `server.js`: Main ExpressJS server file.
-- `frontend/`: Directory containing front-end files.
+- `client/`: Directory containing front-end files.
   - `index.html`: Main HTML file.
   - `style.css`: CSS file for styling the interface.
   - `script.js`: JavaScript file for front-end logic.
