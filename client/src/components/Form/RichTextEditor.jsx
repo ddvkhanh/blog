@@ -53,17 +53,6 @@ export default function RichTextEditor({ content, setContent }) {
     const [modalIsOpen, setIsOpen] = useState(false);
     const [url, setUrl] = useState("");
 
-    // useEffect(() => {
-    //     if (!editor || !content) return;
-
-    //     if (editor.getHTML() !== content) {
-    //         console.log(editor.getHTML());
-    //         console.log(content);
-
-    //         editor.commands.setContent(content);
-    //     }
-    // }, [editor, content]);
-
     useEffect(() => {
         if (editor && content) {
             // Set content on first mount or when content prop changes
@@ -73,7 +62,7 @@ export default function RichTextEditor({ content, setContent }) {
         if (editor) {
             // Update content in real-time based on editor changes
             editor.on('update', () => {
-                setContent(editor.getHTML());  // Update the content state whenever editor updates
+                setContent(editor.getHTML());
             });
         }
     }, [editor, content, setContent]);

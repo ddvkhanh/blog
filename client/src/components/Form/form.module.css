@@ -34,6 +34,10 @@ ol {
     margin-left: 20px;
 }
 
+a {
+  text-decoration: underline;
+  color: var(--color-blue);
+}
 
 *,
 *:before,
@@ -52,9 +56,6 @@ body {
   line-height: 1.6;
 }
 
-a {
-  color: var(--color-pink);
-}
 
 p {
   margin: 0;
