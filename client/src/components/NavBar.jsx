@@ -24,11 +24,11 @@ export default function NavBar() {
                         <Bars3Icon aria-hidden="true" className="h-6 w-6" />
                     </button>
                 </div>
-                <div className="hidden lg:flex lg:gap-x-12">
+                <div className="hidden lg:flex lg:gap-x-12 items-center justify-center w-full">
                     {navigation.map((item) => (
                         <Link to={item.path}
                             key={item.name}
-                            className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 hover:bg-gray-500"
+                            className="-mx-3 block text-white no-underline rounded-lg px-3 py-2 text-base font-semibold leading-7 hover:bg-gray-500"
                         >{item.name}</Link>
                     ))}
                 </div>
@@ -56,7 +56,7 @@ export default function NavBar() {
                                 {navigation.map((item) => (
                                     <Link to={item.path}
                                         key={item.name}
-                                        className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 hover:bg-gray-500"
+                                        className="-mx-3 block text-black no-underline rounded-lg px-3 py-2 text-base font-semibold leading-7 hover:bg-slate-300"
                                     >{item.name}</Link>
                                 ))}
                             </div>

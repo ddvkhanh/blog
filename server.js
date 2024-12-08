@@ -76,7 +76,7 @@ app.get(API_POSTS, async (req, res) => {
 
     // Convert the image binary data (Buffer) to Base64 for each post
     const updatedPosts = posts.map(post => {
-      const postObj = post.toObject(); // Convert the Mongoose document to a plain object
+      const postObj = post.toObject(); // Convert the Mongoose document to a plain object to call .toString('base64') on the Buffer data directly.
 
       if (postObj.thumbnail && postObj.thumbnail.data) {
         const base64Image = postObj.thumbnail.data.toString('base64'); 
@@ -143,6 +143,7 @@ app.post(API_POSTS,upload.single('thumbnail') , async (req, res) => {
     }
   })
     await newPost.save();
+    console.log(newPost);
     res.status(201).json(newPost);
   } catch (error) {
     console.error("Error saving post:", error);

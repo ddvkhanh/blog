@@ -39,7 +39,7 @@ export default function PostDetails() {
             <div className="max-w-3xl mx-auto">
                 <div className="mt-3 rounded-b lg:rounded-b-none lg:rounded-r flex flex-col leading-normal">
                     <div className="">
-                        <p className="text-base leading-8 my-5">{post.content}</p>
+                        <p className="text-base leading-8 my-5" dangerouslySetInnerHTML={{ __html: post.content }}></p>
                     </div>
                 </div>
             </div>

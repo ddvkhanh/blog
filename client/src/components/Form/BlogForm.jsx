@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import { API_POSTS } from '../../constants/data';
+import RichTextEditor from './RichTextEditor';
 
 export default function BlogForm() {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [thumbnail, setThumbnail] = useState(null);
-    const [thumbnailName, setThumbnailName] = useState(''); // New state for thumbnail name
+    const [thumbnailName, setThumbnailName] = useState('');
 
     const navigate = useNavigate();
     const { id } = useParams();
@@ -61,7 +62,6 @@ export default function BlogForm() {
             console.log(`${key}: ${value}`);
         }
 
-
         try {
             if (id) {
                 // update existing post
@@ -101,7 +101,8 @@ export default function BlogForm() {
                 <h1 className="max-w-3xl pt-5 text-xl sm:text-4xl font-semibold inline-block transition duration-500 ease-in-out inline-block mb-2">{id ? 'Edit Post' : 'Add New Post'}</h1>
             </div>
             <div className="bg-white p-12 rounded-lg">
-                <form encType="multipart/form-data">
+
+                <form encType="multipart/form-data" onSubmit={handleSubmit}>
                     <div className="space-y-12">
                         <div className="border-b border-gray-900/10 pb-12">
                             <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
@@ -115,9 +116,11 @@ export default function BlogForm() {
                                 </div>
 
                                 <div className="col-span-full">
-                                    <label htmlFor="content" className="block text-sm/6 font-medium text-gray-900">Content</label>
+                                    <label>Content:</label>
+                                    <label className="block text-sm/6 font-medium text-gray-900">Content</label>
                                     <div className="mt-2">
-                                        <textarea id="content" name="content" rows="10" value={content} onChange={(e) => setContent(e.target.value)} className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6" required></textarea>
+                                        <RichTextEditor content={content} setContent={setContent} />
+                                        {/* <textarea id="content" name="content" rows="10" value={content} onChange={(e) => setContent(e.target.value)} className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6" required></textarea> */}
                                     </div>
                                     <p className="mt-3 text-sm/6 text-gray-600">Write the content for your blog.</p>
                                 </div>
@@ -147,7 +150,7 @@ export default function BlogForm() {
                     </div>
                     <div className="mt-6 flex items-center justify-end gap-x-6">
                         <button type="button" className="text-sm/6 font-semibold text-gray-900" onClick={handleCancel}>Cancel</button>
-                        <button type="submit" className="rounded-md bg-teal-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-teal-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600" onClick={handleSubmit}>{id ? 'Update Post' : 'Add Post'}</button>
+                        <button type="button" className="rounded-md bg-teal-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-teal-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600" onClick={handleSubmit}>{id ? 'Update Post' : 'Add Post'}</button>
                     </div>
                 </form>
             </div>
